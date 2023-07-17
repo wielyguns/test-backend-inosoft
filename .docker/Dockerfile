@@ -50,7 +50,6 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x | bash
 RUN apt install nodejs
 RUN apt install iputils-ping
 RUN pecl install mongodb
-RUN composer require jenssegers/mongodb
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
