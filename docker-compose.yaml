@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: adi
+        uid: 1000
+      context: ./
+      dockerfile: ./.docker/Dockerfile
+    image: test-backend-inosoft
+    container_name: test-backend-inosoft-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./conf.d/custom.ini:/usr/local/etc/php/conf.d/php.ini
+    networks:
+      - network1
+  nginx:
+    image: nginx:alpine
+    container_name: test-backend-inosoft-nginx
+    restart: unless-stopped
+    ports:
+      - 8022:83
+    volumes:
+      - ./:/var/www/html
+      - ./nginx/:/etc/nginx/conf.d/
+      # - ./nginx/hosts:/etc/hosts
+    networks:
+      - network1
+networks:
+  network1:
+    name: amore-network
+    external: true
