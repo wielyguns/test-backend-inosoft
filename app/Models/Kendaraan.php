@@ -2,10 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Relations\MorphTo;
 
 class Kendaraan extends Model
 {
-    protected $collection = 'kendaraan';
-    protected $connection = 'mongodb';
+    use HasFactory;
+
+    /**
+     * Get the parent kendaraanable model (motor,mobil).
+     */
+    public function imageable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 }
