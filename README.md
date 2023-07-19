@@ -2,13 +2,16 @@
 
 ## Installation
 ### With Docker You Must
+
 Just run </br>
 <blockquote>docker compose up -d --build</blockquote>
+
 ### Install Dependencies
 first do :
-<clipboard>composer install<clipboard> <br>
+<blockquote>composer install</blockquote> </br>
 after that :
 <blockquote>php artisan jwt:secret</blockquote>
+
 ## Go To Docker Shell Location
 RUN composer install </br>
 RUN composer required jenssegers/mongodb </br>
