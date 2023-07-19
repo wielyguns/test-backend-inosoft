@@ -3,18 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Relations\HasOne;
 
 class Motor extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'mesin',
+        'tipe_suspensi',
+        'tipe_transmisi',
+        'kendaraan_id',
+    ];
 
-    /**
-     * Get the motor's kendaraan.
-     */
-    public function kendaraan(): MorphOne
+    public function kendaraans()
     {
-        return $this->morphOne(Kendaraan::class, 'kendaraanable');
+        return $this->morphMany(Kendaraan::class, 'kendaraanable');
     }
 }

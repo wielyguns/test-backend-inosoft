@@ -9,14 +9,14 @@ use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\ValidationException;
 
-class LoginRequest extends FormRequest
+class KendaraanRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -30,8 +30,11 @@ class LoginRequest extends FormRequest
     {
         // dd(Request::route()->getName());
         $rules = [
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'tahun_keluaran' => ['required'],
+            'warna' => ['required'],
+            'harga' => ['required'],
+            'type' => ['required'],
+            'kendaraanable_id' => ['required'],
         ];
 
         return $rules;
@@ -42,12 +45,10 @@ class LoginRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
-            'email.required' => 'Kolom Email harus di isi',
-            'email.email' => 'Kolom Email harus menggunakan format email yang benar',
-            'password.required' => 'Kolom Password harus di isi',
+            'required' => 'Kolom :attribute harus di isi',
         ];
     }
 
@@ -57,10 +58,9 @@ class LoginRequest extends FormRequest
      * @param  \Illuminate\Validation\Validator  $validator
      * @return void
      */
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator): void
     {
         $errors = (new ValidationException($validator))->errors();
-
         throw new HttpResponseException(
             Response::json([
                 'message' => 'Something wrong with your data',

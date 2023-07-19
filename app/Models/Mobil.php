@@ -3,18 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Relations\HasOne;
 
 class Mobil extends Model
 {
     use HasFactory;
+    protected $connection = 'mongodb';
 
-    /**
-     * Get the mobil's kendaraan.
-     */
-    public function kendaraan(): MorphOne
+    protected $table = 'mobils';
+
+    protected $fillable = [
+        'mesin',
+        'kapasitas_penumpang',
+        'tipe',
+        'kendaraan_id',
+    ];
+
+    public function kendaraans()
     {
-        return $this->morphOne(Kendaraan::class, 'kendaraanable');
+        return $this->morphMany(Kendaraan::class, 'kendaraanable');
     }
 }

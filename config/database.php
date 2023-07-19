@@ -36,7 +36,7 @@ return [
     'connections' => [
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb+srv://rendervous:JpmXbx2@cluster0.dm3vj5x.mongodb.net/?retryWrites=true&w=majority'),
+            'dsn' => env('DB_URI'),
             'database' => 'test-backend-inosoft',
         ],
         'sqlite' => [
@@ -46,7 +46,6 @@ return [
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
-
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),

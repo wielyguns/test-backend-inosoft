@@ -12,9 +12,9 @@ class MotorRepository implements MotorRepositoryInterface
         return Motor::all();
     }
 
-    public function getMotorById($orderId): Object
+    public function getMotorById($orderId, $with = []): Object
     {
-        return Motor::findOrFail($orderId);
+        return Motor::with($with)->findOrFail($orderId);
     }
 
     public function deleteMotor($orderId): void
@@ -29,7 +29,14 @@ class MotorRepository implements MotorRepositoryInterface
 
     public function updateMotor($orderId, array $newDetails): Object
     {
-        return Motor::whereId($orderId)->update($newDetails);
+        $data =  Motor::findOrFail($orderId);
+
+        foreach ($newDetails as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        $data->save();
+        return $data;
     }
 
     public function getIdMotor(): Object

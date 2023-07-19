@@ -12,6 +12,7 @@
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 if (!function_exists('getResponseData')) {
     function getResponseData(
@@ -45,5 +46,43 @@ if (!function_exists('getThrowCatch')) {
     ): JsonResponse {
         $data = config('app.env') == 'production' ? 'Internal Server Error' : $data;
         return getResponseData($message, false, $data, $statusCode);
+    }
+}
+
+/**
+ * Shortcut for make connection mongo
+ *
+ * @return JsonResponse
+ */
+if (!function_exists('mongoTransaction')) {
+    function mongoTransaction(): object
+    {
+        return DB::connection('mongodb')->getMongoClient()->startSession();
+    }
+}
+/**
+ * Converting date to format DB
+ *
+ * @return JsonResponse
+ */
+if (!function_exists('dateStore')) {
+    function dateStore($param = null)
+    {
+        if ($param != null) {
+            return \carbon\carbon::parse(str_replace('/', '-', $param))->format('Y-m-d');
+        } else {
+            return \carbon\carbon::now()->format('Y-m-d');
+        }
+    }
+}
+/**
+ * Aggregate to parse any carbon date
+ *
+ * @return JsonResponse
+ */
+if (!function_exists('CarbonParse')) {
+    function CarbonParse($date, $format)
+    {
+        return \carbon\carbon::parse($date)->format($format);
     }
 }

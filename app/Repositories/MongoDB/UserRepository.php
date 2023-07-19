@@ -12,9 +12,9 @@ class UserRepository implements UserRepositoryInterface
         return User::all();
     }
 
-    public function getUserById($orderId): Object
+    public function getUserById($orderId, $with = []): Object
     {
-        return User::findOrFail($orderId);
+        return User::with($with)->findOrFail($orderId);
     }
 
     public function deleteUser($orderId): void
@@ -40,5 +40,14 @@ class UserRepository implements UserRepositoryInterface
     public function getUserWithEloquent($relation): Object
     {
         return User::with($relation)->get();
+    }
+
+    public function findUserWhere(array $relation): ?Object
+    {
+        return User::where(function ($q) use ($relation) {
+            foreach ($relation as $key => $value) {
+                $q->where($key, $value);
+            }
+        })->first();
     }
 }

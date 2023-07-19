@@ -2,20 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MobilRequest;
 use App\Http\Requests\MotorRequest;
+use App\Interfaces\KendaraanRepositoryInterface;
 use App\Interfaces\MotorRepositoryInterface;
+use App\Models\Kendaraan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use MongoDB\BSON\ObjectId;
 
 class MotorController extends Controller
 {
     private MotorRepositoryInterface $motorRepository;
-
+    private $title = 'motor';
     public function __construct(MotorRepositoryInterface $MotorRepository)
     {
-        $this->middleware('auth:api');
+        $this->middleware('api');
         $this->motorRepository = $MotorRepository;
     }
 
@@ -31,20 +35,28 @@ class MotorController extends Controller
             return getResponseData('Success', true, $data, Response::HTTP_OK);
         } catch (\Throwable $th) {
             //throw $th;
-            return getThrowCatch($th->getMessage(), $th->getTrace(), $th->getCode());
+            return getThrowCatch($th->getMessage(), $th->getTrace(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  MotorRequest  $request
+     * @param  MotorRequest  $req
      * @return \Illuminate\Http\Response
      */
-    public function store(MotorRequest $request): JsonResponse
+    public function store(MotorRequest $req): JsonResponse
     {
-        return DB::transaction(function () use ($request) {
-        });
+        $session = mongoTransaction();
+        $session->startTransaction();
+        try {
+            $data = $this->motorRepository->createMotor($req->validated());
+            $session->commitTransaction();
+            return getResponseData("Success store data of $this->title", true, $data, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            $session->abortTransaction();
+            return getThrowCatch($th->getMessage(), $th->getTrace(), Response::HTTP_BAD_REQUEST);
+        }
     }
     /**
      * Display the specified resource.
@@ -52,21 +64,36 @@ class MotorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
-        //
+        try {
+            $data = $this->motorRepository->getMotorById($id);
+            return getResponseData('Success', true, $data, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return getThrowCatch($th->getMessage(), $th->getTrace(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  MotorRequest  $req
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(MotorRequest $req, $id): JsonResponse
     {
-        //
+        $session = mongoTransaction();
+        $session->startTransaction();
+        try {
+            $data = $this->motorRepository->updateMotor($id, $req->validated());
+            $session->commitTransaction();
+            return getResponseData("Success update data of $this->title", true, $data, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            $session->abortTransaction();
+            return getThrowCatch($th->getMessage(), $th->getTrace(), Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
@@ -75,8 +102,17 @@ class MotorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
-        //
+        $session = mongoTransaction();
+        $session->startTransaction();
+        try {
+            $data = $this->motorRepository->deleteMotor($id);
+            $session->commitTransaction();
+            return getResponseData("Success delete data of $this->title", true, $data, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            $session->abortTransaction();
+            return getThrowCatch($th->getMessage(), $th->getTrace(), Response::HTTP_BAD_REQUEST);
+        }
     }
 }

@@ -2,26 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\MobilRequest;
-use App\Interfaces\KendaraanRepositoryInterface;
-use App\Interfaces\MobilRepositoryInterface;
-use App\Models\Kendaraan;
+use App\Http\Requests\PenjualanRequest;
+use App\Interfaces\PenjualanRepositoryInterface;
+use App\Services\PenjualanService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use MongoDB\BSON\ObjectId;
 
-class MobilController extends Controller
+class PenjualanController extends Controller
 {
-    private MobilRepositoryInterface $mobilRepository;
-    private $title = 'mobil';
-    public function __construct(MobilRepositoryInterface $MobilRepository)
+    private PenjualanRepositoryInterface $penjualanRepository;
+
+    private $title = 'penjualan';
+    public function __construct(PenjualanRepositoryInterface $PenjualanRepository)
     {
         $this->middleware('api');
-        $this->mobilRepository = $MobilRepository;
+        $this->penjualanRepository = $PenjualanRepository;
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -30,7 +27,7 @@ class MobilController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $data = $this->mobilRepository->getAllMobils();
+            $data = $this->penjualanRepository->getAllPenjualans();
             return getResponseData('Success', true, $data, Response::HTTP_OK);
         } catch (\Throwable $th) {
             //throw $th;
@@ -41,15 +38,16 @@ class MobilController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  MobilRequest  $req
+     * @param  PenjualanRequest  $req
+     * @param  PenjualanService  $penjualan
      * @return \Illuminate\Http\Response
      */
-    public function store(MobilRequest $req): JsonResponse
+    public function store(PenjualanRequest $req, PenjualanService $penjualan): JsonResponse
     {
         $session = mongoTransaction();
         $session->startTransaction();
         try {
-            $data = $this->mobilRepository->createMobil($req->validated());
+            $data = $this->penjualanRepository->createPenjualan($penjualan->data($req->validated()));
             $session->commitTransaction();
             return getResponseData("Success store data of $this->title", true, $data, Response::HTTP_OK);
         } catch (\Throwable $th) {
@@ -57,6 +55,7 @@ class MobilController extends Controller
             return getThrowCatch($th->getMessage(), $th->getTrace(), Response::HTTP_BAD_REQUEST);
         }
     }
+
     /**
      * Display the specified resource.
      *
@@ -66,7 +65,10 @@ class MobilController extends Controller
     public function show($id): JsonResponse
     {
         try {
-            $data = $this->mobilRepository->getMobilById($id);
+            $where = [
+                'kendaraan.kendaraanable'
+            ];
+            $data = $this->penjualanRepository->getPenjualanById($id, $where);
             return getResponseData('Success', true, $data, Response::HTTP_OK);
         } catch (\Throwable $th) {
             //throw $th;
@@ -77,16 +79,17 @@ class MobilController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  MobilRequest $req
+     * @param  PenjualanRequest  $req
+     * @param  PenjualanService  $penjualan
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(MobilRequest $req, $id): JsonResponse
+    public function update(PenjualanRequest $req, PenjualanService $penjualan, $id): JsonResponse
     {
         $session = mongoTransaction();
         $session->startTransaction();
         try {
-            $data = $this->mobilRepository->updateMobil($id, $req->validated());
+            $data = $this->penjualanRepository->updatePenjualan($id, $penjualan->data($req->validated()));
             $session->commitTransaction();
             return getResponseData("Success update data of $this->title", true, $data, Response::HTTP_OK);
         } catch (\Throwable $th) {
@@ -106,7 +109,7 @@ class MobilController extends Controller
         $session = mongoTransaction();
         $session->startTransaction();
         try {
-            $data = $this->mobilRepository->deleteMobil($id);
+            $data = $this->penjualanRepository->deletePenjualan($id);
             $session->commitTransaction();
             return getResponseData("Success delete data of $this->title", true, $data, Response::HTTP_OK);
         } catch (\Throwable $th) {

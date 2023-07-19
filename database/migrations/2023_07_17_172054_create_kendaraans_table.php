@@ -18,8 +18,7 @@ class CreateKendaraansTable extends Migration
             $table->integer('tahun_keluaran');
             $table->string('warna');
             $table->double('harga');
-            $table->integer('kendaraanable_id');
-            $table->string('kendaraanable_type');
+            $table->uuidMorphs('kendaraan');
             $table->timestamps();
         });
     }

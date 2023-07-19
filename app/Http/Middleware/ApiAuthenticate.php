@@ -48,6 +48,7 @@ class ApiAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
+
         if (!$this->inExceptArray($request)) {
             if (!JWTAuth::getToken()) {
                 return getThrowCatch('Unauthorized', 'Dont have any provided token', Response::HTTP_UNAUTHORIZED);

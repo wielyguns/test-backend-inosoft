@@ -12,9 +12,9 @@ class MobilRepository implements MobilRepositoryInterface
         return Mobil::all();
     }
 
-    public function getMobilById($orderId): Object
+    public function getMobilById($orderId, $with = []): Object
     {
-        return Mobil::findOrFail($orderId);
+        return Mobil::with($with)->findOrFail($orderId);
     }
 
     public function deleteMobil($orderId): void
@@ -29,7 +29,15 @@ class MobilRepository implements MobilRepositoryInterface
 
     public function updateMobil($orderId, array $newDetails): Object
     {
-        return Mobil::whereId($orderId)->update($newDetails);
+        $data =  Mobil::findOrFail($orderId);
+
+        foreach ($newDetails as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        $data->save();
+
+        return $data;
     }
 
     public function getIdMobil(): Object

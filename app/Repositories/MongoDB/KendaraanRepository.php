@@ -12,9 +12,9 @@ class KendaraanRepository implements KendaraanRepositoryInterface
         return Kendaraan::all();
     }
 
-    public function getKendaraanById($orderId): Object
+    public function getKendaraanById($orderId, $with = []): Object
     {
-        return Kendaraan::findOrFail($orderId);
+        return Kendaraan::with($with)->findOrFail($orderId);
     }
 
     public function deleteKendaraan($orderId): void
@@ -29,7 +29,14 @@ class KendaraanRepository implements KendaraanRepositoryInterface
 
     public function updateKendaraan($orderId, array $newDetails): Object
     {
-        return Kendaraan::whereId($orderId)->update($newDetails);
+        $data =  Kendaraan::findOrFail($orderId);
+
+        foreach ($newDetails as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        $data->save();
+        return $data;
     }
 
     public function getIdKendaraan(): Object

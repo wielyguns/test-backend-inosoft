@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Interfaces\UserRepositoryInterface;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,8 +15,10 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    private UserRepositoryInterface $userRepository;
+    public function __construct(UserRepositoryInterface $UserRepository)
     {
+        $this->userRepository = $UserRepository;
         $this->middleware('api')->except('login');
     }
 
@@ -28,7 +32,13 @@ class AuthController extends Controller
         $credentials = $request->only(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            $checkUser = $this->userRepository->findUserWhere(['email' => request('email')]);
+            
+            if (!$checkUser) {
+                return getThrowCatch('Email or passsword is not match from our credential', null, 401);
+            }
+
+            return getThrowCatch('Something wrong with your data');
         }
 
         return $this->respondWithToken($token);
@@ -41,6 +51,7 @@ class AuthController extends Controller
      */
     public function me(): object
     {
+
         return response()->json(auth()->user());
     }
 

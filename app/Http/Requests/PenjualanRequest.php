@@ -5,18 +5,21 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-class LoginRequest extends FormRequest
+class PenjualanRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -28,10 +31,14 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
-        // dd(Request::route()->getName());
+        $id = Route::current()->penjualan;
         $rules = [
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'pembeli' => ['required'],
+            'telpon' => ['required'],
+            'kendaraan_id' => ['required', Rule::unique('penjualans')->ignore($id, '_id')],
+            'netto' => ['required', 'numeric'],
+            'bruto' => ['required', 'numeric'],
+            'discount' => ['required', 'numeric', 'lte:bruto'],
         ];
 
         return $rules;
@@ -42,12 +49,12 @@ class LoginRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
-            'email.required' => 'Kolom Email harus di isi',
-            'email.email' => 'Kolom Email harus menggunakan format email yang benar',
-            'password.required' => 'Kolom Password harus di isi',
+            'required' => 'Kolom :attribute harus di isi',
+            'numeric' => ':attribute harus angka',
+            'lte' => 'Nilai :attribute tidak boleh lebih besar dari :value',
         ];
     }
 
@@ -57,10 +64,9 @@ class LoginRequest extends FormRequest
      * @param  \Illuminate\Validation\Validator  $validator
      * @return void
      */
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator): void
     {
         $errors = (new ValidationException($validator))->errors();
-
         throw new HttpResponseException(
             Response::json([
                 'message' => 'Something wrong with your data',

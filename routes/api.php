@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 //User Routes
-require __DIR__ . '/auth-route.php';
+require __DIR__ . '/AuthRoute.php';
 // Master Routes
-require __DIR__ . '/master-route.php';
+require __DIR__ . '/MasterRoute.php';
+// Penjualan Routes
+require __DIR__ . '/PenjualanRoute.php';
+// Report Routes
+require __DIR__ . '/ReportRoute.php';
