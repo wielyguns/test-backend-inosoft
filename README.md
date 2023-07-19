@@ -8,7 +8,7 @@ Just run </br>
 
 ### Install Dependencies
 first do :
-<blockquote>composer install</blockquote> </br>
+<blockquote>composer install</blockquote>
 copy all env.example to .env (make if doesnt exist) </br>
 and then run :
 <blockquote>php artisan jwt:secret</blockquote>
