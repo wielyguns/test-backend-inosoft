@@ -12,3 +12,4 @@ first do :
 copy all env.example to .env (make if doesnt exist) </br>
 and then run :
 <blockquote>php artisan jwt:secret</blockquote>
+<blockquote>php artisan migrate:fresh --seed</blockquote>
