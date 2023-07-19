@@ -9,11 +9,6 @@ Just run </br>
 ### Install Dependencies
 first do :
 <blockquote>composer install</blockquote> </br>
-after that :
+copy all env.example to .env (make if doesnt exist) </br>
+and then run :
 <blockquote>php artisan jwt:secret</blockquote>
-
-## Go To Docker Shell Location
-RUN composer install </br>
-RUN composer required jenssegers/mongodb </br>
-In case your Laravel version does NOT autoload the packages, add the service provider to config/app.php:
-<clipboard-copy>Jenssegers\Mongodb\MongodbServiceProvider::class<clipboard-copy>
