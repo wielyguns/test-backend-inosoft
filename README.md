@@ -7,7 +7,7 @@ Just run docker compose up -d --build
 first do :
 <clipboard>composer install<clipboard> <br>
 after that :
-<clipboard-copy>php artisan jwt:secret</clipboard-copy>
+<blockquote>php artisan jwt:secret</blockquote>
 ## Go To Docker Shell Location
 RUN composer install </br>
 RUN composer required jenssegers/mongodb </br>
