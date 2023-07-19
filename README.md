@@ -2,7 +2,8 @@
 
 ## Installation
 ### With Docker You Must
-Just run docker compose up -d --build
+Just run </br>
+<blockquote>docker compose up -d --build</blockquote>
 ### Install Dependencies
 first do :
 <clipboard>composer install<clipboard> <br>
