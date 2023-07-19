@@ -5,7 +5,7 @@
 Just run docker compose up -d --build
 ### Install Dependencies
 first do :
-<clipboard-copy>composer install<clipboard-copy> <br>
+<clipboard>composer install<clipboard> <br>
 after that :
 <clipboard-copy>php artisan jwt:secret</clipboard-copy>
 ## Go To Docker Shell Location
