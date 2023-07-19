@@ -10,6 +10,6 @@ Just run </br>
 first do :
 <blockquote>composer install</blockquote>
 copy all env.example to .env (make if doesnt exist) </br>
-and then run :
+and then run :</br>
 <blockquote>php artisan jwt:secret</blockquote>
 <blockquote>php artisan migrate:fresh --seed</blockquote>
